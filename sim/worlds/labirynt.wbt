@@ -1,0 +1,229 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/Parquetry.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.27663237700430904 -0.6982384474633819 0.6602557068870151 5.3132574358468005
+  position -0.12958669676619483 0.10479339527022816 0.154567434961621
+  near 0.005
+  follow "micromouse_platypus"
+  ambientOcclusionRadius 1
+  bloomThreshold 64
+}
+Background {
+  skyColor [
+    1 1 1
+  ]
+  luminosity 0.8
+}
+RectangleArena {
+  floorAppearance Parquetry {
+    type "light strip"
+  }
+}
+Robot {
+  children [
+    Pose {
+      translation 0 0 0.012
+      children [
+        InertialUnit {
+          translation 0 0 -0.002
+          name "imu"
+          translationStep 0.001
+        }
+        Solid {
+          translation -0.04 0 -0.006
+          name "back leg"
+          boundingObject Cylinder {
+            height 0.01
+            radius 0.0025
+            subdivision 16
+          }
+          physics Physics {
+          }
+          translationStep 0.001
+        }
+        Solid {
+          translation 0.045 0 -0.006
+          name "front leg"
+          boundingObject Cylinder {
+            height 0.01
+            radius 0.0025
+            subdivision 16
+          }
+          physics Physics {
+          }
+          translationStep 0.001
+        }
+        DistanceSensor {
+          translation 0.042 -0.0098 0.003
+          rotation 0 0 1 -1.5707953071795862
+          name "rr lidar"
+          translationStep 0.0001
+          lookupTable [
+            0 0 0
+            1 1 0
+          ]
+          aperture 0.3
+        }
+        DistanceSensor {
+          translation 0.0313 -0.0143 0.003
+          rotation 0 0 1 -0.785395307179586
+          name "rd lidar"
+          translationStep 0.0001
+          lookupTable [
+            0 0 0
+            1 1 0
+          ]
+          aperture 0.3
+        }
+        DistanceSensor {
+          translation 0.0268 -0.025 0.003
+          name "rf lidar"
+          translationStep 0.0001
+          lookupTable [
+            0 0 0
+            1 1 0
+          ]
+          aperture 0.3
+        }
+        DistanceSensor {
+          translation 0.042 0.0098 0.003
+          rotation 0 0 1 1.5708
+          name "ll lidar"
+          translationStep 0.0001
+          lookupTable [
+            0 0 0
+            1 1 0
+          ]
+          aperture 0.3
+        }
+        DistanceSensor {
+          translation 0.0313 0.0143 0.003
+          rotation 0 0 -1 -0.7854053071795866
+          name "ld lidar"
+          translationStep 0.0001
+          lookupTable [
+            0 0 0
+            1 1 0
+          ]
+          aperture 0.3
+        }
+        DistanceSensor {
+          translation 0.0268 0.025 0.003
+          name "lf lidar"
+          translationStep 0.0001
+          lookupTable [
+            0 0 0
+            1 1 0
+          ]
+          aperture 0.3
+          resolution 0.001
+        }
+        HingeJoint {
+          jointParameters HingeJointParameters {
+            axis 0 1 0
+            anchor 0 0 0.005
+          }
+          device [
+            PositionSensor {
+              name "right wheel encoder"
+            }
+            RotationalMotor {
+              name "right wheel motor"
+              maxVelocity 8
+              maxTorque 0.1
+            }
+          ]
+          endPoint Solid {
+            translation 0 -0.038 0.005
+            rotation 0 0 1 1.57
+            children [
+              CadShape {
+                url [
+                  "../protos/meshes/micromouse_platypus_wheel.dae"
+                ]
+              }
+            ]
+            name "right wheel"
+            boundingObject Pose {
+              rotation 0 1 0 1.57
+              children [
+                Cylinder {
+                  height 0.004
+                  radius 0.017
+                }
+              ]
+            }
+            physics Physics {
+            }
+          }
+        }
+        HingeJoint {
+          jointParameters HingeJointParameters {
+            axis 0 1 0
+            anchor 0 0 0.005
+          }
+          device [
+            PositionSensor {
+              name "left wheel encoder"
+            }
+            RotationalMotor {
+              name "left wheel motor"
+              maxVelocity 8
+              maxTorque 0.01
+            }
+          ]
+          endPoint Solid {
+            translation 0 0.038 0.005
+            rotation 0 0 -1 1.57
+            children [
+              CadShape {
+                url [
+                  "../protos/meshes/micromouse_platypus_wheel.dae"
+                ]
+              }
+            ]
+            name "left wheel"
+            boundingObject Pose {
+              rotation 0 1 0 1.57
+              children [
+                Cylinder {
+                  height 0.004
+                  radius 0.017
+                }
+              ]
+            }
+            physics Physics {
+            }
+          }
+        }
+        Pose {
+          rotation 0.7071067811865475 0.7071067811865475 0 -3.1415926071795863
+          children [
+            CadShape {
+              url [
+                "../protos/meshes/micromouse_platypus_body.dae"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+  name "micromouse_platypus"
+  boundingObject Pose {
+    translation 0 0 0.018
+    children [
+      Box {
+        size 0.1 0.068 0.02
+      }
+    ]
+  }
+  physics Physics {
+  }
+  controller "test_controller"
+}
