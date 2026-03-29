@@ -18,8 +18,8 @@
 /* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __APP_FREERTOS_H__
-#define __APP_FREERTOS_H__
+#ifndef __APP_FREERTOS_H
+#define __APP_FREERTOS_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,6 +60,8 @@ extern osThreadId_t distanceSensorsTaskHandle;
 extern osThreadId_t imuTaskHandle;
 extern osThreadId_t batteryTaskHandle;
 extern osThreadId_t buzzerTaskHandle;
+extern osThreadId_t loggerTaskHandle;
+extern osMessageQueueId_t logQueueHandle;
 
 /* Exported function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -72,6 +74,7 @@ void startDistanceSensorsTask(void *argument);
 void startImuTask(void *argument);
 void startBatteryTask(void *argument);
 void startBuzzerTask(void *argument);
+void startLoggerTask(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -83,4 +86,4 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 #ifdef __cplusplus
 }
 #endif
-#endif /* __APP_FREERTOS_H__ */
+#endif /* __APP_FREERTOS_H */

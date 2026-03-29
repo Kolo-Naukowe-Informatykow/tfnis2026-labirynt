@@ -44,19 +44,19 @@ SourceFiles=;
 
 [ThirdPartyIp]
 ThirdPartyIpNumber=3
-ThirdPartyIpName#0=STMicroelectronics.X-CUBE-FREERTOS.1.2.0
-ThirdPartyIpName#1=STMicroelectronics.X-CUBE-MEMS1.10.0.0
-ThirdPartyIpName#2=STMicroelectronics.X-CUBE-TOF1.3.4.2
+ThirdPartyIpName#0=STMicroelectronics.X-CUBE-FREERTOS.1.5.0
+ThirdPartyIpName#1=STMicroelectronics.X-CUBE-MEMS1.12.0.0
+ThirdPartyIpName#2=STMicroelectronics.X-CUBE-TOF1.3.4.3
 
-[ThirdPartyIp#STMicroelectronics.X-CUBE-FREERTOS.1.2.0]
+[ThirdPartyIp#STMicroelectronics.X-CUBE-FREERTOS.1.5.0]
 include=../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM33_NTZ/non_secure;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2;../Drivers/CMSIS/RTOS2/Include;
 source=../Middlewares/Third_Party/FreeRTOS/Source/croutine.c;../Middlewares/Third_Party/FreeRTOS/Source/event_groups.c;../Middlewares/Third_Party/FreeRTOS/Source/list.c;../Middlewares/Third_Party/FreeRTOS/Source/queue.c;../Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c;../Middlewares/Third_Party/FreeRTOS/Source/tasks.c;../Middlewares/Third_Party/FreeRTOS/Source/timers.c;../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM33_NTZ/non_secure/port.c;../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c;../Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c;
 
-[ThirdPartyIp#STMicroelectronics.X-CUBE-MEMS1.10.0.0]
+[ThirdPartyIp#STMicroelectronics.X-CUBE-MEMS1.12.0.0]
 header=../Drivers/BSP/Components/lsm6dsl/lsm6dsl_reg.h;../Drivers/BSP/Components/lsm6dsl/lsm6dsl.h;
 source=../Drivers/BSP/Components/lsm6dsl/lsm6dsl_reg.c;../Drivers/BSP/Components/lsm6dsl/lsm6dsl.c;
 
-[ThirdPartyIp#STMicroelectronics.X-CUBE-TOF1.3.4.2]
+[ThirdPartyIp#STMicroelectronics.X-CUBE-TOF1.3.4.3]
 other=../Drivers/BSP/Components/vl53l4cd/LICENSE.md;../Drivers/BSP/Components/vl53l4cd/_htmresc/Add button.svg;../Drivers/BSP/Components/vl53l4cd/_htmresc/favicon.png;../Drivers/BSP/Components/vl53l4cd/_htmresc/mini-st_2020.css;../Drivers/BSP/Components/vl53l4cd/_htmresc/st_logo_2020.png;../Drivers/BSP/Components/vl53l4cd/_htmresc/Update.svg;
 doc=../Drivers/BSP/Components/vl53l4cd/LICENSE.txt;../Drivers/BSP/Components/vl53l4cd/Release_Notes.html;
 header=../Drivers/BSP/Components/vl53l4cd/modules/vl53l4cd_api.h;../Drivers/BSP/Components/vl53l4cd/modules/vl53l4cd_calibration.h;../Drivers/BSP/Components/vl53l4cd/porting/platform.h;../Drivers/BSP/Components/vl53l4cd/vl53l4cd.h;

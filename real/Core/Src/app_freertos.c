@@ -22,10 +22,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "logging.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
+typedef StaticQueue_t osStaticMessageQDef_t;
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
@@ -86,6 +87,24 @@ const osThreadAttr_t buzzerTask_attributes = {
   .priority = (osPriority_t) osPriorityNormal1,
   .stack_size = 128 * 4
 };
+/* Definitions for loggerTask */
+osThreadId_t loggerTaskHandle;
+const osThreadAttr_t loggerTask_attributes = {
+  .name = "loggerTask",
+  .priority = (osPriority_t) osPriorityBelowNormal,
+  .stack_size = 512 * 4
+};
+/* Definitions for logQueue */
+osMessageQueueId_t logQueueHandle;
+uint8_t logQueueBuffer[ 16 * sizeof( LogMsg_t ) ];
+osStaticMessageQDef_t logQueueControlBlock;
+const osMessageQueueAttr_t logQueue_attributes = {
+  .name = "logQueue",
+  .cb_mem = &logQueueControlBlock,
+  .cb_size = sizeof(logQueueControlBlock),
+  .mq_mem = &logQueueBuffer,
+  .mq_size = sizeof(logQueueBuffer)
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -113,6 +132,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
+  /* creation of logQueue */
+  logQueueHandle = osMessageQueueNew (16, sizeof(LogMsg_t), &logQueue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -134,6 +155,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of buzzerTask */
   buzzerTaskHandle = osThreadNew(startBuzzerTask, NULL, &buzzerTask_attributes);
+
+  /* creation of loggerTask */
+  loggerTaskHandle = osThreadNew(startLoggerTask, NULL, &loggerTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -159,6 +183,7 @@ void startMasterTask(void *argument)
   {
     HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
     osDelay(1000);
+    Logging_Print("lol\r\n");
   }
   /* USER CODE END masterTask */
 }
@@ -251,6 +276,24 @@ void startBuzzerTask(void *argument)
     osDelay(1);
   }
   /* USER CODE END buzzerTask */
+}
+
+/* USER CODE BEGIN Header_startLoggerTask */
+/**
+* @brief Function implementing the loggerTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_startLoggerTask */
+void startLoggerTask(void *argument)
+{
+  /* USER CODE BEGIN loggerTask */
+  logging_exec();
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END loggerTask */
 }
 
 /* Private application code --------------------------------------------------*/

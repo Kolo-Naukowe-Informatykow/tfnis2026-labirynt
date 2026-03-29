@@ -22,9 +22,9 @@
 #define  __RTE_COMPONENTS_H__
 
 /* Defines ------------------------------------------------------------------*/
-/* STMicroelectronics.X-CUBE-MEMS1.10.0.0 */
+/* STMicroelectronics.X-CUBE-MEMS1.12.0.0 */
 #define LSM6DSL_ACCGYR_SPI
-/* STMicroelectronics.X-CUBE-TOF1.3.4.2 */
+/* STMicroelectronics.X-CUBE-TOF1.3.4.3 */
 #define VL53L4CD
 #define BSP_RANGING_SENSOR
 
