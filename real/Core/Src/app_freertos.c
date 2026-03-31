@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "logging.h"
 #include "motors.h"
+#include "battery.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -78,8 +79,8 @@ const osThreadAttr_t imuTask_attributes = {
 osThreadId_t batteryTaskHandle;
 const osThreadAttr_t batteryTask_attributes = {
   .name = "batteryTask",
-  .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
+  .priority = (osPriority_t) osPriorityAboveNormal,
+  .stack_size = 512 * 4
 };
 /* Definitions for buzzerTask */
 osThreadId_t buzzerTaskHandle;
@@ -251,7 +252,7 @@ void startImuTask(void *argument)
 void startBatteryTask(void *argument)
 {
   /* USER CODE BEGIN batteryTask */
-  /* Infinite loop */
+  battery_exec();
   for(;;)
   {
     osDelay(1);
