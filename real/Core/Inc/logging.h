@@ -10,6 +10,6 @@ typedef struct {
 void Logging_Init(void);
 void Logging_Print(const char* fmt, ...);
 
-void logging_exec();
+void logging_exec(void);
 
 #endif

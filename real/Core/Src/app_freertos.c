@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "logging.h"
+#include "motors.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,7 +58,7 @@ osThreadId_t motorsTaskHandle;
 const osThreadAttr_t motorsTask_attributes = {
   .name = "motorsTask",
   .priority = (osPriority_t) osPriorityRealtime,
-  .stack_size = 128 * 4
+  .stack_size = 512 * 4
 };
 /* Definitions for distanceSensorsTask */
 osThreadId_t distanceSensorsTaskHandle;
@@ -92,7 +93,7 @@ osThreadId_t loggerTaskHandle;
 const osThreadAttr_t loggerTask_attributes = {
   .name = "loggerTask",
   .priority = (osPriority_t) osPriorityBelowNormal,
-  .stack_size = 512 * 4
+  .stack_size = 1024 * 4
 };
 /* Definitions for logQueue */
 osMessageQueueId_t logQueueHandle;
@@ -181,9 +182,7 @@ void startMasterTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    HAL_GPIO_TogglePin(LED_STATUS_GPIO_Port, LED_STATUS_Pin);
-    osDelay(1000);
-    Logging_Print("lol\r\n");
+    osDelay(1);
   }
   /* USER CODE END masterTask */
 }
@@ -198,7 +197,7 @@ void startMasterTask(void *argument)
 void startMotorsTask(void *argument)
 {
   /* USER CODE BEGIN motorsTask */
-  /* Infinite loop */
+  motors_exec();
   for(;;)
   {
     osDelay(1);
