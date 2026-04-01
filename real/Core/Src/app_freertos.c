@@ -59,7 +59,7 @@ osThreadId_t motorsTaskHandle;
 const osThreadAttr_t motorsTask_attributes = {
   .name = "motorsTask",
   .priority = (osPriority_t) osPriorityRealtime,
-  .stack_size = 512 * 4
+  .stack_size = 2048 * 4
 };
 /* Definitions for distanceSensorsTask */
 osThreadId_t distanceSensorsTaskHandle;
@@ -180,6 +180,7 @@ void MX_FREERTOS_Init(void) {
 void startMasterTask(void *argument)
 {
   /* USER CODE BEGIN masterTask */
+  vTaskDelay(1000);
   /* Infinite loop */
   for(;;)
   {

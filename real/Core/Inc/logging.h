@@ -8,7 +8,7 @@ typedef struct {
 } LogMsg_t;
 
 void Logging_Init(void);
-void Logging_Print(const char* fmt, ...);
+void print(const char* fmt, ...);
 
 void logging_exec(void);
 

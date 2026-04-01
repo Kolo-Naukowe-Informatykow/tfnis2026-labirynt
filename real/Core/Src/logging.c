@@ -28,7 +28,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 	}
 }
 
-void Logging_Print(const char *fmt, ...) {
+void print(const char *fmt, ...) {
 	LogMsg_t log;
 	va_list args;
 	va_start(args, fmt);
