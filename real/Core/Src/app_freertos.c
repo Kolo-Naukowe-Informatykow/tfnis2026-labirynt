@@ -184,7 +184,11 @@ void startMasterTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    vTaskDelay(1);
+    // vTaskDelay(1000);
+    // target_wheel_velocities[0] = 60.f;
+    // vTaskDelay(5000);
+    // target_wheel_velocities[0] = 0.f;
   }
   /* USER CODE END masterTask */
 }

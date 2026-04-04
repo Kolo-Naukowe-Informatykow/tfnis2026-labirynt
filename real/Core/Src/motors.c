@@ -7,7 +7,7 @@
 #include "math.h"
 #include "task.h"
 
-volatile float desired_wheel_velocities[2] = {0.f, 0.f};
+volatile float target_wheel_velocities[2] = {0.f, 0.f};
 
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
@@ -80,6 +80,7 @@ void set_motor_volts(enum MOTOR_SIDE side, float requsted_volts, float battery_v
 typedef struct {
 	// theta_est zero
 	float omega_est;
+	float dist_est;
 
 	float A;
 	float B;
@@ -88,6 +89,7 @@ typedef struct {
 
 	float L1;
 	float L2;
+	float L3;
 
 	double total_theta;
 
@@ -95,7 +97,7 @@ typedef struct {
 	float correction;
 } MotorObserver;
 
-void observer_init(MotorObserver *obs, float tau, float gain, float deadzone, float dt, float l1, float l2) {
+void observer_init(MotorObserver *obs, float tau, float gain, float deadzone, float dt, float l1, float l2, float l3) {
 	obs->dt = dt;
 	obs->v_deadzone = deadzone;
 
@@ -105,8 +107,10 @@ void observer_init(MotorObserver *obs, float tau, float gain, float deadzone, fl
 
 	obs->L1 = l1;
 	obs->L2 = l2;
+	obs->L3 = l3;
 
 	obs->omega_est = 0.0f;
+	obs->dist_est = 0.0f;
 
 	obs->total_theta = 0.0;
 }
@@ -119,7 +123,7 @@ float observer_update(MotorObserver *obs, float v_cmd, float delta_theta_actual)
 	else if (v_cmd < -obs->v_deadzone)
 		v_physics = v_cmd + obs->v_deadzone;
 
-	float omega_pred = (obs->A * obs->omega_est) + (obs->B * v_physics);
+	float omega_pred = (obs->A * obs->omega_est) + (obs->B * v_physics) - obs->dist_est;
 	float theta_pred = omega_pred * obs->dt;
 
 	obs->correction = delta_theta_actual - theta_pred;
@@ -127,21 +131,86 @@ float observer_update(MotorObserver *obs, float v_cmd, float delta_theta_actual)
 	float theta_corrected = theta_pred + (obs->L1 * obs->correction);
 	obs->omega_est = omega_pred + (obs->L2 * obs->correction / obs->dt);
 
-	obs->total_theta += (double)theta_corrected;
+	obs->dist_est -= obs->L3 * obs->correction;
 
+	obs->total_theta += (double)theta_corrected;
 	return obs->omega_est;
 }
 
 MotorObserver observers[2];
 
+typedef struct {
+	float Kp;
+	float Ki;
+	float Kf;
+	float v_deadzone;
+	float out_max;
+	float dt;
+	float error_sum;
+} MotorController;
+
+void controller_init(MotorController *ctrl, float tau, float gain, float deadzone, float bandwidth_rad_s, float max_out, float dt) {
+	ctrl->Kp = (tau * bandwidth_rad_s) / gain;
+	ctrl->Ki = bandwidth_rad_s / gain;
+	ctrl->Kf = 1.0f / gain;
+	ctrl->v_deadzone = deadzone;
+	ctrl->out_max = max_out;
+	ctrl->dt = dt;
+	ctrl->error_sum = 0.0f;
+
+	if (ctrl->Kp < 1e-6f) {
+		ctrl->Kp = 1e-6f;
+	}
+}
+
+float controller_update(MotorController *ctrl, float target_omega, float actual_omega) {
+	float error = target_omega - actual_omega;
+
+	float p_out = ctrl->Kp * error;
+	float i_out = ctrl->Ki * ctrl->error_sum;
+	float ff_out = target_omega * ctrl->Kf;
+
+	float v_total = p_out + i_out + ff_out;
+
+	if (target_omega > 1e-3f) {
+		v_total += ctrl->v_deadzone;
+	} else if (target_omega < -1e-3f) {
+		v_total -= ctrl->v_deadzone;
+	}
+
+	float v_out = v_total;
+	if (v_out > ctrl->out_max)
+		v_out = ctrl->out_max;
+	else if (v_out < -ctrl->out_max)
+		v_out = -ctrl->out_max;
+
+	float windup_correction = v_out - v_total;
+	ctrl->error_sum += (error * ctrl->dt) + (windup_correction * ctrl->dt / ctrl->Kp);
+
+	if (target_omega == 0.0f && (actual_omega < 0.1f && actual_omega > -0.1f)) {
+		v_out = 0.0f;
+		ctrl->error_sum = 0.0f;
+	}
+
+	return v_out;
+}
+
+void controller_reset(MotorController *ctrl) {
+	ctrl->error_sum = 0.0f;
+}
+
+MotorController controllers[2];
+
 void motors_exec() {
-	motors_init();
 	const TickType_t xFrequency = pdMS_TO_TICKS(1);
-	TickType_t xLastWakeTime = xTaskGetTickCount();
-	observer_init(&observers[0], 0.12f, 44.f, 3.0f, 0.001f, 0.6f, 0.3f);
-	observer_init(&observers[1], 0.1f, 46.f, 3.0f, 0.001f, 0.6f, 0.3f);
+	const float tick_delta_seconds = 0.001f;
+	motors_init();
+	observer_init(&observers[0], 0.1f, 44.f, 2.8f, tick_delta_seconds, 0.8f, 0.01f, 0.1f);
+	observer_init(&observers[1], 0.1f, 45.f, 2.9f, tick_delta_seconds, 0.8f, 0.01f, 0.1f);
+	controller_init(&controllers[0], 0.1f, 44.f, 2.8f, 100.f, 6.f, tick_delta_seconds);
+	controller_init(&controllers[1], 0.1f, 45.f, 2.9f, 100.f, 6.f, tick_delta_seconds);
 	motors_start();
-	print("\r\n\r\n");
+	TickType_t xLastWakeTime = xTaskGetTickCount();
 	for (;;) {
 		float battery_volts = battvolts;
 		for (int i = 0; i < 2; i++) {
@@ -156,7 +225,20 @@ void motors_exec() {
 		for (int i = 0; i < 2; i++) {
 			estimated_velocities[i] = observer_update(&observers[i], motors[i].last_volts, encoders[i].rads_delta);
 		}
-		// TODO PID
+		// {
+		// 	int i = 1;
+		// 	print("%f, %f, %f\r\n", encoders[i].rads_delta / tick_delta_seconds, estimated_velocities[i], observers[i].correction);
+		// 	set_motor_volts(i, target_wheel_velocities[i], battery_volts);
+		// }
+		float commanded_volts[2];
+		for (int i = 0; i < 2; i++) {
+			commanded_volts[i] = controller_update(&controllers[i], target_wheel_velocities[i], estimated_velocities[i]);
+			set_motor_volts(i, commanded_volts[i], battery_volts);
+		}
+		// {
+		// 	int i = 1;
+		// 	print("%f, %f, %f\r\n", target_wheel_velocities[i], estimated_velocities[i], commanded_volts[i]);
+		// }
 		vTaskDelayUntil(&xLastWakeTime, xFrequency);
 	}
 }

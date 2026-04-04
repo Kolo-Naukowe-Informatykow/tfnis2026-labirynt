@@ -1,7 +1,7 @@
 #ifndef MOTORS_H
 #define MOTORS_H
 
-extern volatile float desired_wheel_velocities[2];
+extern volatile float target_wheel_velocities[2];
 
 enum MOTOR_SIDE {
 	MOTOR_LEFT = 0,
