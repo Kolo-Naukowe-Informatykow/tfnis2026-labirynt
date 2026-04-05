@@ -25,6 +25,9 @@
 #include "logging.h"
 #include "motors.h"
 #include "battery.h"
+#include "ranging.h"
+#include "semphr.h"
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,7 +55,7 @@ osThreadId_t masterTaskHandle;
 const osThreadAttr_t masterTask_attributes = {
   .name = "masterTask",
   .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 128 * 4
+  .stack_size = 2048 * 4
 };
 /* Definitions for motorsTask */
 osThreadId_t motorsTaskHandle;
@@ -61,12 +64,12 @@ const osThreadAttr_t motorsTask_attributes = {
   .priority = (osPriority_t) osPriorityRealtime,
   .stack_size = 2048 * 4
 };
-/* Definitions for distanceSensorsTask */
-osThreadId_t distanceSensorsTaskHandle;
-const osThreadAttr_t distanceSensorsTask_attributes = {
-  .name = "distanceSensorsTask",
+/* Definitions for TofTask */
+osThreadId_t TofTaskHandle;
+const osThreadAttr_t TofTask_attributes = {
+  .name = "TofTask",
   .priority = (osPriority_t) osPriorityNormal1,
-  .stack_size = 128 * 4
+  .stack_size = 1024 * 4
 };
 /* Definitions for imuTask */
 osThreadId_t imuTaskHandle;
@@ -96,6 +99,11 @@ const osThreadAttr_t loggerTask_attributes = {
   .priority = (osPriority_t) osPriorityBelowNormal,
   .stack_size = 1024 * 4
 };
+/* Definitions for TofMutex */
+osMutexId_t TofMutexHandle;
+const osMutexAttr_t TofMutex_attributes = {
+  .name = "TofMutex"
+};
 /* Definitions for logQueue */
 osMessageQueueId_t logQueueHandle;
 uint8_t logQueueBuffer[ 16 * sizeof( LogMsg_t ) ];
@@ -122,6 +130,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
+  /* creation of TofMutex */
+  TofMutexHandle = osMutexNew(&TofMutex_attributes);
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
@@ -146,8 +156,8 @@ void MX_FREERTOS_Init(void) {
   /* creation of motorsTask */
   motorsTaskHandle = osThreadNew(startMotorsTask, NULL, &motorsTask_attributes);
 
-  /* creation of distanceSensorsTask */
-  distanceSensorsTaskHandle = osThreadNew(startDistanceSensorsTask, NULL, &distanceSensorsTask_attributes);
+  /* creation of TofTask */
+  TofTaskHandle = osThreadNew(startTofTask, NULL, &TofTask_attributes);
 
   /* creation of imuTask */
   imuTaskHandle = osThreadNew(startImuTask, NULL, &imuTask_attributes);
@@ -185,10 +195,6 @@ void startMasterTask(void *argument)
   for(;;)
   {
     vTaskDelay(1);
-    // vTaskDelay(1000);
-    // target_wheel_velocities[0] = 60.f;
-    // vTaskDelay(5000);
-    // target_wheel_velocities[0] = 0.f;
   }
   /* USER CODE END masterTask */
 }
@@ -211,22 +217,22 @@ void startMotorsTask(void *argument)
   /* USER CODE END motorsTask */
 }
 
-/* USER CODE BEGIN Header_startDistanceSensorsTask */
+/* USER CODE BEGIN Header_startTofTask */
 /**
-* @brief Function implementing the distanceSensorsTask thread.
+* @brief Function implementing the TofTask thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_startDistanceSensorsTask */
-void startDistanceSensorsTask(void *argument)
+/* USER CODE END Header_startTofTask */
+void startTofTask(void *argument)
 {
-  /* USER CODE BEGIN distanceSensorsTask */
-  /* Infinite loop */
+  /* USER CODE BEGIN TofTask */
+  tof_exec();
   for(;;)
   {
     osDelay(1);
   }
-  /* USER CODE END distanceSensorsTask */
+  /* USER CODE END TofTask */
 }
 
 /* USER CODE BEGIN Header_startImuTask */

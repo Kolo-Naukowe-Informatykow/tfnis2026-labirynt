@@ -26,6 +26,5 @@
 #define LSM6DSL_ACCGYR_SPI
 /* STMicroelectronics.X-CUBE-TOF1.3.4.3 */
 #define VL53L4CD
-#define BSP_RANGING_SENSOR
 
 #endif /* __RTE_COMPONENTS_H__ */

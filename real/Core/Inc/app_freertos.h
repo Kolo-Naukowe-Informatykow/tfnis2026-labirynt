@@ -56,11 +56,12 @@ extern "C" {
 /* USER CODE END EM */
 extern osThreadId_t masterTaskHandle;
 extern osThreadId_t motorsTaskHandle;
-extern osThreadId_t distanceSensorsTaskHandle;
+extern osThreadId_t TofTaskHandle;
 extern osThreadId_t imuTaskHandle;
 extern osThreadId_t batteryTaskHandle;
 extern osThreadId_t buzzerTaskHandle;
 extern osThreadId_t loggerTaskHandle;
+extern osMutexId_t TofMutexHandle;
 extern osMessageQueueId_t logQueueHandle;
 
 /* Exported function prototypes -----------------------------------------------*/
@@ -70,7 +71,7 @@ extern osMessageQueueId_t logQueueHandle;
 
 void startMasterTask(void *argument);
 void startMotorsTask(void *argument);
-void startDistanceSensorsTask(void *argument);
+void startTofTask(void *argument);
 void startImuTask(void *argument);
 void startBatteryTask(void *argument);
 void startBuzzerTask(void *argument);

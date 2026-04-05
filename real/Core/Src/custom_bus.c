@@ -685,7 +685,7 @@ __weak HAL_StatusTypeDef MX_I2C2_Init(I2C_HandleTypeDef* hi2c)
   HAL_StatusTypeDef ret = HAL_OK;
 
   hi2c->Instance = I2C2;
-  hi2c->Init.Timing = 0x10C043E5;
+  hi2c->Init.Timing = 0x00C035A6;
   hi2c->Init.OwnAddress1 = 0;
   hi2c->Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c->Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -704,6 +704,11 @@ __weak HAL_StatusTypeDef MX_I2C2_Init(I2C_HandleTypeDef* hi2c)
   }
 
   if (HAL_I2CEx_ConfigDigitalFilter(hi2c, 0) != HAL_OK)
+  {
+    ret = HAL_ERROR;
+  }
+
+  if (HAL_I2CEx_ConfigFastModePlus(hi2c, I2C_FASTMODEPLUS_ENABLE) != HAL_OK)
   {
     ret = HAL_ERROR;
   }

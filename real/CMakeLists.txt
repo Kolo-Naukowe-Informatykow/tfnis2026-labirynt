@@ -47,6 +47,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/logging.c
     Core/Src/motors.c
     Core/Src/battery.c
+    Core/Src/ranging.c
 )
 
 # Add include paths

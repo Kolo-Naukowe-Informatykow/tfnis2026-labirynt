@@ -61,8 +61,10 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define DIST6_GPIO1_Pin GPIO_PIN_13
 #define DIST6_GPIO1_GPIO_Port GPIOC
+#define DIST6_GPIO1_EXTI_IRQn EXTI13_IRQn
 #define DIST2_GPIO1_Pin GPIO_PIN_14
 #define DIST2_GPIO1_GPIO_Port GPIOC
+#define DIST2_GPIO1_EXTI_IRQn EXTI14_IRQn
 #define DIST2_XSHUT_Pin GPIO_PIN_15
 #define DIST2_XSHUT_GPIO_Port GPIOC
 #define LED_INFO_0_Pin GPIO_PIN_0
@@ -99,6 +101,7 @@ void Error_Handler(void);
 #define BT_IRQ_GPIO_Port GPIOC
 #define DIST1_GPIO1_Pin GPIO_PIN_0
 #define DIST1_GPIO1_GPIO_Port GPIOB
+#define DIST1_GPIO1_EXTI_IRQn EXTI0_IRQn
 #define DIST1_XSHUT_Pin GPIO_PIN_1
 #define DIST1_XSHUT_GPIO_Port GPIOB
 #define IMU_INT2_Pin GPIO_PIN_2
@@ -119,6 +122,7 @@ void Error_Handler(void);
 #define ENC_L_2_GPIO_Port GPIOC
 #define DIST4_GPIO1_Pin GPIO_PIN_8
 #define DIST4_GPIO1_GPIO_Port GPIOC
+#define DIST4_GPIO1_EXTI_IRQn EXTI8_IRQn
 #define DIST4_XSHUT_Pin GPIO_PIN_9
 #define DIST4_XSHUT_GPIO_Port GPIOC
 #define LED_STATUS_Pin GPIO_PIN_8
@@ -129,6 +133,7 @@ void Error_Handler(void);
 #define VCP_RX_GPIO_Port GPIOA
 #define DIST3_GPIO1_Pin GPIO_PIN_11
 #define DIST3_GPIO1_GPIO_Port GPIOA
+#define DIST3_GPIO1_EXTI_IRQn EXTI11_IRQn
 #define DIST3_XSHUT_Pin GPIO_PIN_12
 #define DIST3_XSHUT_GPIO_Port GPIOA
 #define DEBUG_SWDIO_Pin GPIO_PIN_13
@@ -149,6 +154,7 @@ void Error_Handler(void);
 #define DEBUG_SWO_GPIO_Port GPIOB
 #define DIST5_GPIO1_Pin GPIO_PIN_4
 #define DIST5_GPIO1_GPIO_Port GPIOB
+#define DIST5_GPIO1_EXTI_IRQn EXTI4_IRQn
 #define DIST5_XSHUT_Pin GPIO_PIN_5
 #define DIST5_XSHUT_GPIO_Port GPIOB
 #define ENC_R_2_Pin GPIO_PIN_6

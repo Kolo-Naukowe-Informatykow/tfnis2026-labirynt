@@ -167,7 +167,7 @@ done:
     return Status;
 }
 
-uint8_t VL53L4CD_WaitMs(
+uint8_t __attribute__((weak)) VL53L4CD_WaitMs(
 		Dev_t Dev,
 		uint32_t TimeMs)
 {
