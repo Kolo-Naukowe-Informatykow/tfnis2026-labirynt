@@ -20,7 +20,7 @@ void battery_exec(void) {
 	for (;;) {
 		if (ulTaskNotifyTake(pdTRUE, portMAX_DELAY) > 0) {
 			battvolts = adc_value * 3.3f / 4095.0f * ADC_conversion;
-			// Logging_Print("%f V %" PRIu16 "\r\n", battvolts, adc_value);
+			// print("%f, %" PRIu16 "\r\n", battvolts, adc_value);
 		}
 	}
 }

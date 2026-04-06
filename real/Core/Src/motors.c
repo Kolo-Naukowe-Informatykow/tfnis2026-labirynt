@@ -213,6 +213,11 @@ void motors_exec() {
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 	for (;;) {
 		float battery_volts = battvolts;
+		if(battery_volts < 3.f){
+			motors_stop();
+			vTaskDelayUntil(&xLastWakeTime, xFrequency);
+			continue;
+		}
 		for (int i = 0; i < 2; i++) {
 			uint16_t count = __HAL_TIM_GET_COUNTER(encoders[i].htim);
 			encoders[i].delta = count - encoders[i].last_count;
@@ -226,7 +231,7 @@ void motors_exec() {
 			estimated_velocities[i] = observer_update(&observers[i], motors[i].last_volts, encoders[i].rads_delta);
 		}
 		// {
-		// 	int i = 1;
+		// 	int i = 0;
 		// 	print("%f, %f, %f\r\n", encoders[i].rads_delta / tick_delta_seconds, estimated_velocities[i], observers[i].correction);
 		// 	set_motor_volts(i, target_wheel_velocities[i], battery_volts);
 		// }
@@ -236,7 +241,7 @@ void motors_exec() {
 			set_motor_volts(i, commanded_volts[i], battery_volts);
 		}
 		// {
-		// 	int i = 1;
+		// 	int i = 0;
 		// 	print("%f, %f, %f\r\n", target_wheel_velocities[i], estimated_velocities[i], commanded_volts[i]);
 		// }
 		vTaskDelayUntil(&xLastWakeTime, xFrequency);

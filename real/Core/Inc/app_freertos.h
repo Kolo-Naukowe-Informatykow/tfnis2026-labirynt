@@ -56,7 +56,7 @@ extern "C" {
 /* USER CODE END EM */
 extern osThreadId_t masterTaskHandle;
 extern osThreadId_t motorsTaskHandle;
-extern osThreadId_t TofTaskHandle;
+extern osThreadId_t tofTaskHandle;
 extern osThreadId_t imuTaskHandle;
 extern osThreadId_t batteryTaskHandle;
 extern osThreadId_t buzzerTaskHandle;

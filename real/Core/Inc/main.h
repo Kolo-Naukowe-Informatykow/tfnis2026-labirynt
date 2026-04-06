@@ -79,6 +79,7 @@ void Error_Handler(void);
 #define M_NFAULT_GPIO_Port GPIOC
 #define IMU_INT1_Pin GPIO_PIN_3
 #define IMU_INT1_GPIO_Port GPIOC
+#define IMU_INT1_EXTI_IRQn EXTI3_IRQn
 #define ML1_Pin GPIO_PIN_0
 #define ML1_GPIO_Port GPIOA
 #define ML2_Pin GPIO_PIN_1
@@ -106,6 +107,7 @@ void Error_Handler(void);
 #define DIST1_XSHUT_GPIO_Port GPIOB
 #define IMU_INT2_Pin GPIO_PIN_2
 #define IMU_INT2_GPIO_Port GPIOB
+#define IMU_INT2_EXTI_IRQn EXTI2_IRQn
 #define DIST_SCL_Pin GPIO_PIN_10
 #define DIST_SCL_GPIO_Port GPIOB
 #define DIST_SDA_Pin GPIO_PIN_12

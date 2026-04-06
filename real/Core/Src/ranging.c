@@ -136,7 +136,7 @@ void tof_exec(void) {
 void tof_set_data_ready(uint8_t sensor_index) {
 	if (sensor_index < TOF_SENSOR_COUNT) {
 		BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-		xTaskNotifyFromISR(TofTaskHandle, (1 << sensor_index), eSetBits, &xHigherPriorityTaskWoken);
+		xTaskNotifyFromISR(tofTaskHandle, (1 << sensor_index), eSetBits, &xHigherPriorityTaskWoken);
 		portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 	}
 }
