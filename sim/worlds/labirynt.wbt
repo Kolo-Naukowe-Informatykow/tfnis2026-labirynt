@@ -29,10 +29,11 @@ Robot {
     Pose {
       translation 0 0 0.012
       children [
-        InertialUnit {
+        Gyro {
           translation 0 0 -0.002
-          name "imu"
           translationStep 0.001
+          xAxis FALSE
+          yAxis FALSE
         }
         Solid {
           translation -0.04 0 -0.006
