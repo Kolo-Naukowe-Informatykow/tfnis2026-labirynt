@@ -5,6 +5,9 @@
 #include "main.h"
 #include "vl53l4cd.h"
 
+#include "vl53l4cd_api.h"
+#include "vl53l4cd_calibration.h"
+
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "task.h"
@@ -16,6 +19,8 @@ TOF_Measurement tof_measurements[TOF_SENSOR_COUNT] = {{0, 255}, {0, 255}, {0, 25
 VL53L4CD_Object_t sensors[TOF_SENSOR_COUNT];
 
 const uint8_t SENSOR_ADDRESSES[TOF_SENSOR_COUNT] = {0x54, 0x56, 0x58, 0x5A, 0x5C, 0x5E};
+
+const int16_t tof_calibrations[TOF_SENSOR_COUNT] = {-12, -16, -17, -14, -19, -8};
 
 typedef struct {
 	GPIO_TypeDef *port;
@@ -83,6 +88,7 @@ void Init_All_Sensors(void) {
 
 void Start_All_Sensors_IT(void) {
 	int32_t ret;
+	VL53L4CD_Error ret_err;
 	VL53L4CD_ProfileConfig_t profile = {0};
 	profile.TimingBudget = 10;
 	profile.Frequency = 0;
@@ -91,6 +97,11 @@ void Start_All_Sensors_IT(void) {
 	it_cfg.Criteria = VL53L4CD_IT_DEFAULT;
 
 	for (int i = 0; i < TOF_SENSOR_COUNT; i++) {
+		ret_err = VL53L4CD_SetOffset(&sensors[i], tof_calibrations[i]);
+		if (ret_err != VL53L4CD_OK) {
+			vTaskSuspend(NULL);
+		}
+
 		ret = VL53L4CD_ConfigProfile(&sensors[i], &profile);
 		if (ret != VL53L4CD_OK) {
 			vTaskSuspend(NULL);
@@ -110,6 +121,23 @@ void Start_All_Sensors_IT(void) {
 
 void tof_exec(void) {
 	Init_All_Sensors();
+
+	// while (1) {
+	// 	print("Calibrating sensors...\r\n");
+	// 	for (int i = 0; i < TOF_SENSOR_COUNT; i++) {
+	// 		VL53L4CD_Error ret;
+	// 		int16_t calib;
+	// 		vTaskDelay(pdMS_TO_TICKS(10000));
+	// 		print("Calibrating lidar %d...\r\n", i);
+	// 		ret = VL53L4CD_CalibrateOffset(&sensors[i], 100, &calib, 10);
+	// 		if (ret != VL53L4CD_OK) {
+	// 			print("Calibration failed for lidar %d: %d\r\n", i, ret);
+	// 		} else {
+	// 			print("Calibration successful for lidar %d, offset: %d mm\r\n", i, calib);
+	// 		}
+	// 	}
+	// }
+
 	Start_All_Sensors_IT();
 
 	while (1) {

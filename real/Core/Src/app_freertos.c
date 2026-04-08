@@ -229,7 +229,7 @@ void startMotorsTask(void *argument)
 void startTofTask(void *argument)
 {
   /* USER CODE BEGIN tofTask */
-  /* Infinite loop */
+  tof_exec();
   for(;;)
   {
     osDelay(1);

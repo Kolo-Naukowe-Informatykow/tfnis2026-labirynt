@@ -6,8 +6,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.27663237700430904 -0.6982384474633819 0.6602557068870151 5.3132574358468005
-  position -0.12958669676619483 0.10479339527022816 0.154567434961621
+  orientation -0.32027001620091383 -0.70816322450838 0.6292312485696814 5.129746943209525
+  position -0.15412169673896875 0.14488957757723014 0.23764657895579194
   near 0.005
   follow "micromouse_platypus"
   ambientOcclusionRadius 1
@@ -29,6 +29,10 @@ Robot {
     Pose {
       translation 0 0 0.012
       children [
+        InertialUnit {
+          name "imu"
+          translationStep 0.001
+        }
         Gyro {
           translation 0 0 -0.002
           translationStep 0.001

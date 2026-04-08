@@ -124,7 +124,7 @@ void imu_exec(void) {
 		int32_t ret = LSM6DSL_GYRO_GetAxes(&imu_sensor, &gyro_data);
 
 		if (ret == LSM6DSL_OK) {
-			imu_angular_velocity_z = (gyro_data.z - imu_z_gyro_bias) * imu_radians_multiplier_250;
+			imu_angular_velocity_z = -(gyro_data.z - imu_z_gyro_bias) * imu_radians_multiplier_250;
 			// print("%d\r\n", gyro_data.z);
 		}
 	}
