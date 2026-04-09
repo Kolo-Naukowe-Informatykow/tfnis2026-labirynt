@@ -77,7 +77,7 @@ const osThreadAttr_t tofTask_attributes = {
 osThreadId_t imuTaskHandle;
 const osThreadAttr_t imuTask_attributes = {
   .name = "imuTask",
-  .priority = (osPriority_t) osPriorityHigh,
+  .priority = (osPriority_t) osPriorityRealtime1,
   .stack_size = 2048 * 4
 };
 /* Definitions for batteryTask */
@@ -193,6 +193,7 @@ void startMasterTask(void *argument)
 {
   /* USER CODE BEGIN masterTask */
   vTaskDelay(1000);
+  imu_calibrate_async(1000);
   /* Infinite loop */
   for(;;)
   {

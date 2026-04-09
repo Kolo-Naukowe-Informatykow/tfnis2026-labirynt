@@ -22,6 +22,7 @@
 #include "stm32h5xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stm32h5xx_hal.h"
 #include "ranging.h"
 #include "imu.h"
 /* USER CODE END Includes */
@@ -65,7 +66,7 @@ extern UART_HandleTypeDef huart1;
 extern TIM_HandleTypeDef htim17;
 
 /* USER CODE BEGIN EV */
-
+extern TIM_HandleTypeDef htim6;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -205,7 +206,8 @@ void EXTI3_IRQHandler(void)
   /* USER CODE END EXTI3_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(IMU_INT1_Pin);
   /* USER CODE BEGIN EXTI3_IRQn 1 */
-  imu_set_data_ready();
+  uint16_t timer_value = __HAL_TIM_GET_COUNTER(&htim6);
+  imu_set_data_ready(timer_value);
   /* USER CODE END EXTI3_IRQn 1 */
 }
 
