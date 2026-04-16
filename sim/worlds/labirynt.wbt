@@ -1,13 +1,13 @@
 #VRML_SIM R2025a utf8
 
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/Parquetry.proto"
+EXTERNPROTO "../protos/Maze.proto"
 
 WorldInfo {
 }
 Viewpoint {
   orientation -0.32027001620091383 -0.70816322450838 0.6292312485696814 5.129746943209525
-  position -0.15412169673896875 0.14488957757723014 0.23764657895579194
+  position -0.21141985662947435 0.5629927495713384 0.9718722387403274
   near 0.005
   follow "micromouse_platypus"
   ambientOcclusionRadius 1
@@ -19,12 +19,14 @@ Background {
   ]
   luminosity 0.8
 }
-RectangleArena {
+Maze {
   floorAppearance Parquetry {
     type "light strip"
   }
 }
 Robot {
+  translation 0.4096489548056258 0.1059163293317428 -5.321239114102275e-05
+  rotation -0.00964456183486413 -0.4935474146624457 -0.8696654137695885 0.04512706751174911
   children [
     Pose {
       translation 0 0 0.012
@@ -130,6 +132,7 @@ Robot {
         }
         HingeJoint {
           jointParameters HingeJointParameters {
+            position 26.58960161511037
             axis 0 1 0
             anchor 0 0 0.005
           }
@@ -144,8 +147,8 @@ Robot {
             }
           ]
           endPoint Solid {
-            translation 0 -0.038 0.005
-            rotation 0 0 1 1.57
+            translation 0 -0.03799999999999994 0.005
+            rotation 0.5540068693114782 0.5544482155773195 0.6210181680102612 2.0294170419356856
             children [
               CadShape {
                 url [
@@ -165,10 +168,13 @@ Robot {
             }
             physics Physics {
             }
+            linearVelocity 0.016986812650816183 -0.0006670455769582799 -5.665115613197063e-08
+            angularVelocity 0.03923825379767768 0.9992299025475833 -1.1661910698949429e-06
           }
         }
         HingeJoint {
           jointParameters HingeJointParameters {
+            position 24.05924130093817
             axis 0 1 0
             anchor 0 0 0.005
           }
@@ -183,8 +189,8 @@ Robot {
             }
           ]
           endPoint Solid {
-            translation 0 0.038 0.005
-            rotation 0 0 -1 1.57
+            translation 0 0.037999999999999944 0.005
+            rotation 0.45520146514789894 -0.4555640986782344 -0.7650182861361511 1.8347365247324765
             children [
               CadShape {
                 url [
@@ -204,6 +210,8 @@ Robot {
             }
             physics Physics {
             }
+            linearVelocity 0.016986988774410718 -0.0006670524918670324 4.2722447975205686e-08
+            angularVelocity 0.039238267386942874 0.9992299082041457 -1.086391160267719e-06
           }
         }
         Pose {
@@ -231,4 +239,6 @@ Robot {
   physics Physics {
   }
   controller "test_controller"
+  linearVelocity 0.016986900697089483 -0.000667050278189272 -6.934918288008421e-09
+  angularVelocity 1.3319684273717755e-06 -2.9791962363718493e-08 -2.9885352617133933e-06
 }

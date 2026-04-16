@@ -1,0 +1,160 @@
+#VRML_SIM R2025a utf8
+# template language: javascript
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/Floor.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/solids/protos/SolidBox.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/Parquetry.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/BrushedAluminium.proto"
+
+PROTO Maze [
+  field SFVec3f    translation       0 0 0
+  field SFRotation rotation          0 0 1 0
+  field SFString   name              "maze"
+  field SFString   contactMaterial   "default"
+
+  field SFInt32 rows 8
+  field SFInt32 cols 8
+
+  # meters (your micromouse dimensions)
+  field SFFloat postSize      0.012
+  field SFFloat wallLength    0.168
+  field SFFloat wallThickness 0.010
+  field SFFloat wallHeight    0.050
+  field SFFloat pitch         0.18
+
+  # appearance like RectangleArena
+  field SFNode floorAppearance Parquetry { type "chequered" }
+  field SFVec2f floorTileSize  0.18 0.18
+  field SFNode wallAppearance  BrushedAluminium { }
+
+  # Edge maps:
+  # hWalls: (rows+1) strings, each length cols. '-' means a horizontal wall segment is present.
+  # vWalls: (rows) strings, each length (cols+1). '|' means a vertical wall segment is present.
+  field MFString hWalls [
+  "--------"
+  "   -- - "
+  "- -- -- "
+  " ---- - "
+  "     -  "
+  "  ----- "
+  "-    -  "
+  "   --   "
+  "--------"
+]
+  field MFString vWalls [
+  "|| |  | |"
+  "| |  |  |"
+  "| |  |  |"
+  "|| | || |"
+  "|||  | ||"
+  "| | |  ||"
+  "|| || |||"
+  "| |   | |"
+]
+]
+{
+  %<
+    let rows = fields.rows.value;
+    let cols = fields.cols.value;
+    if (rows <= 0) { rows = fields.rows.defaultValue; console.error("'rows' must be > 0."); }
+    if (cols <= 0) { cols = fields.cols.defaultValue; console.error("'cols' must be > 0."); }
+
+    let postSize = fields.postSize.value;
+    let wallLength = fields.wallLength.value;
+    let wallThickness = fields.wallThickness.value;
+    let wallHeight = fields.wallHeight.value;
+    let pitch = fields.pitch.value;
+
+    if (postSize <= 0) { postSize = fields.postSize.defaultValue; console.error("'postSize' must be > 0."); }
+    if (wallLength <= 0) { wallLength = fields.wallLength.defaultValue; console.error("'wallLength' must be > 0."); }
+    if (wallThickness <= 0) { wallThickness = fields.wallThickness.defaultValue; console.error("'wallThickness' must be > 0."); }
+    if (wallHeight <= 0) { wallHeight = fields.wallHeight.defaultValue; console.error("'wallHeight' must be > 0."); }
+    if (pitch <= 0) { pitch = fields.pitch.defaultValue; console.error("'pitch' must be > 0."); }
+
+    const hWalls = fields.hWalls.value;
+    const vWalls = fields.vWalls.value;
+
+    function charAtSafe(line, idx) {
+      if (!line || idx < 0 || idx >= line.length) return ' ';
+      return line[idx];
+    }
+
+    // Maze footprint: distance between outermost post centers is cols*pitch and rows*pitch,
+    // plus one postSize to cover the post thickness.
+    const floorSizeX = cols * pitch + postSize;
+    const floorSizeY = rows * pitch + postSize;
+
+    function postX(j) { return (j - cols / 2.0) * pitch; }
+    function postY(i) { return (i - rows / 2.0) * pitch; }
+
+    let posts = [];
+    for (let i = 0; i <= rows; i++)
+      for (let j = 0; j <= cols; j++)
+        posts.push({ x: postX(j), y: postY(i) });
+
+    let hSegments = [];
+    for (let i = 0; i <= rows; i++) {
+      const line = (i < hWalls.length) ? hWalls[i] : "";
+      for (let j = 0; j < cols; j++) {
+        if (charAtSafe(line, j) !== '-') continue;
+        hSegments.push({ x: (postX(j) + postX(j + 1)) / 2.0, y: postY(i) });
+      }
+    }
+
+    let vSegments = [];
+    for (let i = 0; i < rows; i++) {
+      const line = (i < vWalls.length) ? vWalls[i] : "";
+      for (let j = 0; j <= cols; j++) {
+        if (charAtSafe(line, j) !== '|') continue;
+        vSegments.push({ x: postX(j), y: (postY(i) + postY(i + 1)) / 2.0 });
+      }
+    }
+  >%
+
+  Solid {
+    translation IS translation #;
+    rotation IS rotation #;
+    name IS name #;
+    children [
+      Floor {
+        size %<= floorSizeX >% %<= floorSizeY >%
+        tileSize IS floorTileSize
+        appearance IS floorAppearance
+        contactMaterial IS contactMaterial
+      }
+
+      # Posts
+      %< for (let k = 0; k < posts.length; k++) { >%
+      SolidBox {
+        name %<= `"post_${k}"` >%
+        translation %<= posts[k].x >% %<= posts[k].y >% %<= wallHeight * 0.5 >%
+        size %<= postSize >% %<= postSize >% %<= wallHeight >%
+        appearance IS wallAppearance
+        contactMaterial IS contactMaterial
+      }
+      %< } >%
+
+      # Horizontal walls (along X)
+      %< for (let k = 0; k < hSegments.length; k++) { >%
+      SolidBox {
+        name %<= `"hwall_${k}"` >%
+        translation %<= hSegments[k].x >% %<= hSegments[k].y >% %<= wallHeight * 0.5 >%
+        size %<= wallLength >% %<= wallThickness >% %<= wallHeight >%
+        appearance IS wallAppearance
+        contactMaterial IS contactMaterial
+      }
+      %< } >%
+
+      # Vertical walls (along Y)
+      %< for (let k = 0; k < vSegments.length; k++) { >%
+      SolidBox {
+        name %<= `"vwall_${k}"` >%
+        translation %<= vSegments[k].x >% %<= vSegments[k].y >% %<= wallHeight * 0.5 >%
+        size %<= wallThickness >% %<= wallLength >% %<= wallHeight >%
+        appearance IS wallAppearance
+        contactMaterial IS contactMaterial
+      }
+      %< } >%
+    ]
+  }
+}
