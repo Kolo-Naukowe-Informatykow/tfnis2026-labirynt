@@ -235,5 +235,5 @@ Robot {
   }
   physics Physics {
   }
-  controller "test_controller"
+  controller "maze_controller"
 }

@@ -7,7 +7,7 @@
 #include <webots/position_sensor.h>
 #include <webots/robot.h>
 
-#include "common/maze_impl.c"
+#include "common/labirynt_impl.h"
 
 #define TIME_STEP 32
 #define NUM_SENSORS 6
@@ -17,6 +17,14 @@ static void print(const char *fmt, ...) {
   va_start(args, fmt);
   vprintf(fmt, args);
   va_end(args);
+}
+
+static float normalize_angle(float a) {
+  while (a > (float)M_PI)
+    a -= (float)(2.0f * (float)M_PI);
+  while (a < (float)-M_PI)
+    a += (float)(2.0f * (float)M_PI);
+  return a;
 }
 
 int main(int argc, char *argv[]) {
@@ -55,7 +63,7 @@ int main(int argc, char *argv[]) {
   setup_in.fn_print = print;
   setup_in.fn_imu_calibrate_async = 0;
   labirynt_setup_output setup_out;
-  maze_setup(setup_in, &setup_out);
+  labirynt_setup(setup_in, &setup_out);
 
   // Main loop
   labirynt_loop_input loop_in = {0};
@@ -84,7 +92,7 @@ int main(int argc, char *argv[]) {
     }
     loop_in.integrated_yaw = normalize_angle(yaw - yaw_offset);
 
-    maze_loop(loop_in, &loop_out);
+    labirynt_loop(loop_in, &loop_out);
 
     wb_motor_set_velocity(left_motor, loop_out.wheel_velocities[0]);
     wb_motor_set_velocity(right_motor, loop_out.wheel_velocities[1]);

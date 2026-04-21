@@ -70,13 +70,13 @@ static void start_move(labirynt_loop_input in) {
   s_state = STATE_MOVING;
 }
 
-void maze_setup(labirynt_setup_input in, labirynt_setup_output *out) {
+void labirynt_setup(labirynt_setup_input in, labirynt_setup_output *out) {
   (void)out;
   s_print = in.fn_print;
   s_state = STATE_DECIDE;
 }
 
-void maze_loop(labirynt_loop_input in, labirynt_loop_output *out) {
+void labirynt_loop(labirynt_loop_input in, labirynt_loop_output *out) {
   // Tunables
   const float wall_mm = 100.0f; // threshold for "wall present"
   const float turn_speed = 3.0f; // rad/s wheel velocity (Webots motor velocity)
