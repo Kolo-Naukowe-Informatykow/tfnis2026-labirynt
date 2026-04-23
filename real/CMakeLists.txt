@@ -49,11 +49,13 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/battery.c
     Core/Src/ranging.c
     Core/Src/imu.c
+    Core/Src/maze.c
+    Core/common/maze_impl.c
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined include paths
+    Core/common
 )
 
 # Add project symbols (macros)

@@ -6,8 +6,8 @@ EXTERNPROTO "../protos/Maze.proto"
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.05462902786637281 -0.9910225487053587 0.122024494557077 5.391078607554095
-  position -1.6509970053117249 0.12355664348514728 1.8136407677477653
+  orientation 0.1484639362700786 -0.7961548069296646 -0.5865969510916185 5.553871461593438
+  position -1.8873305834476544 -0.7974168576098927 1.2607265630399254
   near 0.005
   follow "micromouse_platypus"
   followType "None"
@@ -21,6 +21,7 @@ Background {
   luminosity 0.8
 }
 Maze {
+  contactMaterial "floor"
   floorAppearance Parquetry {
     type "light strip"
   }
@@ -140,15 +141,18 @@ Robot {
           device [
             PositionSensor {
               name "right wheel encoder"
+              noise 0.0087
+              resolution 0.0231852
             }
             RotationalMotor {
               name "right wheel motor"
+              acceleration 18
               maxVelocity 8
-              maxTorque 0.1
+              maxTorque 0.001
             }
           ]
           endPoint Solid {
-            translation 0 -0.03800000000000002 0.005
+            translation 0 -0.03800000000000024 0.005
             rotation 0.5540068693114781 0.5544482155773195 0.6210181680102611 2.0294170419356856
             children [
               CadShape {
@@ -158,12 +162,13 @@ Robot {
               }
             ]
             name "right wheel"
+            contactMaterial "tire"
             boundingObject Pose {
               rotation 0 1 0 1.57
               children [
                 Cylinder {
                   height 0.004
-                  radius 0.017
+                  radius 0.016
                 }
               ]
             }
@@ -180,11 +185,14 @@ Robot {
           device [
             PositionSensor {
               name "left wheel encoder"
+              noise 0.0087
+              resolution 0.0231852
             }
             RotationalMotor {
               name "left wheel motor"
-              maxVelocity 8
-              maxTorque 0.01
+              acceleration 10
+              maxVelocity 20
+              maxTorque 0.001
             }
           ]
           endPoint Solid {
@@ -198,6 +206,7 @@ Robot {
               }
             ]
             name "left wheel"
+            contactMaterial "tire"
             boundingObject Pose {
               rotation 0 1 0 1.57
               children [
@@ -234,6 +243,9 @@ Robot {
     ]
   }
   physics Physics {
+    centerOfMass [
+      -0.01 -0.01 0
+    ]
   }
   controller "maze_controller"
 }

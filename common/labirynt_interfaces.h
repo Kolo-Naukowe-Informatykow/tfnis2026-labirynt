@@ -12,6 +12,7 @@ typedef struct {
 } labirynt_setup_output;
 
 typedef struct {
+	float dt;
 	float battery_volts;
 	float integrated_yaw;
 	double encoders_angle[2];

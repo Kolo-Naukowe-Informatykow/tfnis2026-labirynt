@@ -30,6 +30,7 @@
 #include "motors.h"
 #include "ranging.h"
 #include "imu.h"
+#include "maze.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -194,7 +195,9 @@ void startMasterTask(void *argument)
   /* USER CODE BEGIN masterTask */
   vTaskDelay(1000);
   imu_calibrate_async(1000);
-  /* Infinite loop */
+  vTaskDelay(1100);
+  imu_integrated_angle_z = 0.0f;
+  maze_exec();
   for(;;)
   {
     vTaskDelay(1);

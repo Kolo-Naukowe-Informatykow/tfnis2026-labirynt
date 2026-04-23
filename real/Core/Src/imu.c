@@ -23,7 +23,7 @@ volatile float imu_integrated_angle_z = 0.0f;
 
 static LSM6DSL_Object_t imu_sensor;
 
-static const float imu_radians_multiplier_250 = 0.000152716f;
+static const float imu_mdps_to_rads_multiplier = 0.00001745329f;
 static int32_t imu_z_gyro_bias = 0;
 
 int32_t imu_get_tick(void) {
@@ -155,7 +155,7 @@ void imu_exec(void) {
 					imu_calibrating = false;
 				}
 			}
-			imu_angular_velocity_z = -(gyro_data.z - imu_z_gyro_bias) * imu_radians_multiplier_250;
+			imu_angular_velocity_z = -(gyro_data.z - imu_z_gyro_bias) * imu_mdps_to_rads_multiplier;
 			// print("%d\r\n", gyro_data.z);
 			if (imu_last_clock_tick != 0) {
 				uint16_t delta_ticks = current_microsecond - imu_last_clock_tick;

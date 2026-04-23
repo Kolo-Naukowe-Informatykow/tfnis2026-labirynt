@@ -2,6 +2,7 @@
 #define MOTORS_H
 
 extern volatile float target_wheel_velocities[2];
+extern volatile double encoders_angle[2];
 
 enum MOTOR_SIDE {
 	MOTOR_LEFT = 0,

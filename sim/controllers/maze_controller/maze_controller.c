@@ -19,6 +19,10 @@ static void print(const char *fmt, ...) {
   va_end(args);
 }
 
+static void imu_calibrate_async(uint64_t duration_ms) {
+  // No calibration needed in simulation
+}
+
 static float normalize_angle(float a) {
   while (a > (float)M_PI)
     a -= (float)(2.0f * (float)M_PI);
@@ -61,7 +65,7 @@ int main(int argc, char *argv[]) {
   // Initialize control algorithm
   labirynt_setup_input setup_in = {0};
   setup_in.fn_print = print;
-  setup_in.fn_imu_calibrate_async = 0;
+  setup_in.fn_imu_calibrate_async = imu_calibrate_async;
   labirynt_setup_output setup_out;
   labirynt_setup(setup_in, &setup_out);
 
