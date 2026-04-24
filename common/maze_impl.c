@@ -78,7 +78,7 @@ void labirynt_setup(labirynt_setup_input in, labirynt_setup_output *out) {
 
 void labirynt_loop(labirynt_loop_input in, labirynt_loop_output *out) {
   // Tunables
-  const float wall_mm = 100.0f; // threshold for "wall present"
+  const float wall_mm = 160.0f; // threshold for "wall present"
   const float turn_speed = 3.0f; // rad/s wheel velocity (Webots motor velocity)
   const float fwd_speed = 4.0f;
   const float yaw_eps = 0.03f; // ~1.7 deg

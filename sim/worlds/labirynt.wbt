@@ -6,8 +6,8 @@ EXTERNPROTO "../protos/Maze.proto"
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.1484639362700786 -0.7961548069296646 -0.5865969510916185 5.553871461593438
-  position -1.8873305834476544 -0.7974168576098927 1.2607265630399254
+  orientation -0.01698401486700749 -0.9998375139280545 -0.006040610992644384 5.067383090805748
+  position -0.917691106253977 -0.559484704125411 0.8785769129388523
   near 0.005
   follow "micromouse_platypus"
   followType "None"
@@ -146,13 +146,13 @@ Robot {
             }
             RotationalMotor {
               name "right wheel motor"
-              acceleration 18
+              acceleration 50
               maxVelocity 8
-              maxTorque 0.001
+              maxTorque 0.1
             }
           ]
           endPoint Solid {
-            translation 0 -0.03800000000000024 0.005
+            translation 0 -0.03800000000000042 0.005
             rotation 0.5540068693114781 0.5544482155773195 0.6210181680102611 2.0294170419356856
             children [
               CadShape {
@@ -168,7 +168,7 @@ Robot {
               children [
                 Cylinder {
                   height 0.004
-                  radius 0.016
+                  radius 0.0168
                 }
               ]
             }
@@ -190,9 +190,9 @@ Robot {
             }
             RotationalMotor {
               name "left wheel motor"
-              acceleration 10
+              acceleration 50
               maxVelocity 20
-              maxTorque 0.001
+              maxTorque 0.1
             }
           ]
           endPoint Solid {
