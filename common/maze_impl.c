@@ -78,22 +78,28 @@ void labirynt_setup(labirynt_setup_input in, labirynt_setup_output *out) {
 
 void labirynt_loop(labirynt_loop_input in, labirynt_loop_output *out) {
   // Tunables
-  const float wall_mm = 160.0f; // threshold for "wall present"
+  const float wall_mm = 100.0f; // threshold for "wall present"
   const float turn_speed = 3.0f; // rad/s wheel velocity (Webots motor velocity)
   const float fwd_speed = 4.0f;
   const float yaw_eps = 0.03f; // ~1.7 deg
-  const float cell_dist_rad = 10.5f; // encoder radians to move one cell
+  
   const float move_balance_k = 1.0f;
+  const float center_k = 0.05f;
+
+  const float cell_dist_rad = 10.5f; // encoder radians to move one cell
+  const float target_side_dist = 75.0f; // desired distance from walls
 
   // Sensors
   const float right = (float)in.lidar[3].distance;
-  const float front = (float)in.lidar[0].distance;
+  const float front = ((float)in.lidar[0].distance + (float)in.lidar[1].distance) / 2.0f;
   const float left = (float)in.lidar[2].distance;
   const float yaw = in.integrated_yaw;
 
   const int right_open = (right > wall_mm);
   const int left_open = (left > wall_mm);
   const int front_open = (front > wall_mm);
+
+  // printf("L: %.1f  F: %.1f  R: %.1f  Yaw: %.2f\n", left, front, right, yaw);
 
   switch (s_state) {
     case STATE_DECIDE: {
@@ -132,14 +138,28 @@ void labirynt_loop(labirynt_loop_input in, labirynt_loop_output *out) {
       float dr = (float)in.encoders_angle[1] - s_move_start_right;
       float d = 0.5f * (dl + dr);
 
-      if (d >= cell_dist_rad) {
+
+
+      if (d >= cell_dist_rad || (front < target_side_dist)) {
+        // printf(d >= cell_dist_rad ? "Reached cell target\n" : "Obstacle ahead\n");
         s_state = STATE_DECIDE;
         set_wheels(out, 0.0f, 0.0f);
         break;
       }
 
       // Simple balance correction to reduce drift
-      float balance = clampf((dl - dr) * move_balance_k, -1.0f, 1.0f);
+      float balance = (dl - dr) * move_balance_k;
+
+      // Center using left and right walls when they exist
+      if (!left_open && !right_open) {
+        balance += (left - right) * center_k;
+      } else if (!left_open) {
+        balance += (left - target_side_dist) * center_k;
+      } else if (!right_open) {
+        balance += (target_side_dist - right) * center_k;
+      }
+
+      balance = clampf(balance, -1.0f, 1.0f);
       set_wheels(out, fwd_speed - balance, fwd_speed + balance);
       break;
     }
