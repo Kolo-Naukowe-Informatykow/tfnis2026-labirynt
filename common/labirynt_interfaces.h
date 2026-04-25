@@ -6,6 +6,7 @@
 typedef struct {
 	void (*fn_print)(const char *fmt, ...);
 	void (*fn_imu_calibrate_async)(uint64_t duration_ms);
+	void (*fn_wait)(uint64_t ms);
 } labirynt_setup_input;
 
 typedef struct {

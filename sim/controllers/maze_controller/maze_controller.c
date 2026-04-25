@@ -12,6 +12,15 @@
 #define TIME_STEP 32
 #define NUM_SENSORS 6
 
+static void wait(uint64_t ms) {
+  float time_step = wb_robot_get_basic_time_step();
+  double start_time = wb_robot_get_time();
+  while (wb_robot_step(time_step) != -1) {
+    if (wb_robot_get_time() >= start_time + (double)ms / 1000.0)
+      break;
+  }
+}
+
 static void print(const char *fmt, ...) {
   va_list args;
   va_start(args, fmt);
@@ -66,6 +75,7 @@ int main(int argc, char *argv[]) {
   labirynt_setup_input setup_in = {0};
   setup_in.fn_print = print;
   setup_in.fn_imu_calibrate_async = imu_calibrate_async;
+  setup_in.fn_wait = wait;
   labirynt_setup_output setup_out;
   labirynt_setup(setup_in, &setup_out);
 

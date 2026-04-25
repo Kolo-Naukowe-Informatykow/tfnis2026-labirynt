@@ -8,6 +8,10 @@
 #include "ranging.h"
 #include "task.h"
 
+static void wait(uint64_t ms) {
+	vTaskDelay(pdMS_TO_TICKS(ms));
+}
+
 void maze_exec() {
 	const TickType_t xFrequency = pdMS_TO_TICKS(10);
 	const float tick_delta_seconds = 0.01f;
