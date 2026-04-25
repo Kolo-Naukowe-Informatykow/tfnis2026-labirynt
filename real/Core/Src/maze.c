@@ -8,8 +8,11 @@
 #include "ranging.h"
 #include "task.h"
 
+static TickType_t xLastWakeTime;
+
 static void wait(uint64_t ms) {
 	vTaskDelay(pdMS_TO_TICKS(ms));
+	xLastWakeTime = xTaskGetTickCount();
 }
 
 void maze_exec() {
@@ -19,11 +22,12 @@ void maze_exec() {
 	labirynt_setup_input setup_in = {0};
 	setup_in.fn_print = print;
 	setup_in.fn_imu_calibrate_async = imu_calibrate_async;
+	setup_in.fn_wait = wait;
 
 	labirynt_setup_output setup_out;
 	labirynt_setup(setup_in, &setup_out);
 
-	TickType_t xLastWakeTime = xTaskGetTickCount();
+	xLastWakeTime = xTaskGetTickCount();
 	for (;;) {
 		labirynt_loop_input loop_in = {0};
 		loop_in.battery_volts = battvolts;

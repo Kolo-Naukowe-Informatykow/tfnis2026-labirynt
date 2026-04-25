@@ -93,16 +93,17 @@ void evaluate_nav_stage() {
 	case GOAL:
 		if (nav_state.current_x >= 4 && nav_state.current_x <= 5 && nav_state.current_y >= 4 && nav_state.current_y <= 5) {
 			s_state = STATE_IMU_CALIB;
-			nav_state.stage = EXPLORATION;
 			select_exploration_point();
+			if (nav_state.exploration_goal_x == 0 && nav_state.exploration_goal_y == 0) {
+				nav_state.stage = RETURN;
+			} else {
+				nav_state.stage = EXPLORATION;
+			}
 		}
 		break;
 	case EXPLORATION:
 		if (nav_state.current_x == nav_state.exploration_goal_x && nav_state.current_y == nav_state.exploration_goal_y) {
-			select_exploration_point();
-			if (nav_state.exploration_goal_x == 0 && nav_state.exploration_goal_y == 0) {
-				nav_state.stage = RETURN;
-			}
+			nav_state.stage = RETURN;
 		}
 		break;
 	case RETURN:
